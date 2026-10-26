@@ -1,0 +1,220 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0e1826;
+  --color-ink-2: #142438;
+  --color-ink-3: #1d3049;
+  --color-paper: #f4f1ea;
+  --color-paper-2: #ece7db;
+  --color-sand: #ddd5c2;
+  --color-accent: #f2591d;
+  --color-accent-deep: #c9420f;
+  --color-steel: #5c6c84;
+  --color-steel-2: #8b99ad;
+  --color-cream: #faf8f3;
+  --color-line: rgba(14, 24, 38, 0.14);
+
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-body: "Barlow", "Helvetica Neue", Arial, sans-serif;
+
+  --shadow-hard: 4px 4px 0 0 #0e1826;
+  --shadow-hard-lg: 7px 7px 0 0 #0e1826;
+  --shadow-hard-sm: 2px 2px 0 0 #0e1826;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-cream);
+}
+
+/* ── grain / noise film over everything ─────────────────────────────── */
+.noise-film::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── roofline diagonal section edges ────────────────────────────────── */
+.roofline-bottom {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 44px), 0 100%);
+}
+.roofline-top {
+  clip-path: polygon(0 44px, 100% 0, 100% 100%, 0 100%);
+}
+@media (max-width: 767px) {
+  .roofline-bottom { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 22px), 0 100%); }
+  .roofline-top { clip-path: polygon(0 22px, 100% 0, 100% 100%, 0 100%); }
+}
+
+/* ── signature press buttons ─────────────────────────────────────────── */
+.btn-press {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 2px solid var(--color-ink);
+  box-shadow: var(--shadow-hard);
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+  cursor: pointer;
+  user-select: none;
+}
+.btn-press:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-hard-lg);
+}
+.btn-press:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-hard-sm);
+}
+.btn-accent {
+  background: var(--color-accent);
+  color: var(--color-cream);
+}
+.btn-accent:hover { background: var(--color-accent-deep); border-color: var(--color-accent-deep); }
+.btn-ink {
+  background: var(--color-ink);
+  color: var(--color-cream);
+}
+.btn-cream {
+  background: var(--color-cream);
+  color: var(--color-ink);
+}
+.btn-ghost-dark {
+  background: transparent;
+  color: var(--color-cream);
+  border-color: var(--color-cream);
+  box-shadow: 4px 4px 0 0 rgba(250, 248, 243, 0.28);
+}
+
+/* ── overline label ──────────────────────────────────────────────────── */
+.overline-label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+}
+
+/* ── marquee trust ticker ────────────────────────────────────────────── */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 36s linear infinite;
+}
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ── scroll reveal ───────────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1), transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* line-mask headline reveal */
+.line-mask { overflow: hidden; display: block; }
+.line-mask > span {
+  display: block;
+  transform: translateY(110%);
+  animation: line-up 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--line-delay, 0ms);
+}
+@keyframes line-up {
+  to { transform: translateY(0); }
+}
+
+/* ── ken burns breathing ─────────────────────────────────────────────── */
+.kenburns {
+  animation: kenburns 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes kenburns {
+  from { transform: scale(1) translate(0, 0); }
+  to { transform: scale(1.09) translate(-1.5%, 1.5%); }
+}
+
+/* ── hazard stripe (roofing tape) ────────────────────────────────────── */
+.hazard {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-accent) 0 14px,
+    var(--color-ink) 14px 28px
+  );
+}
+
+/* ── card hover lift ─────────────────────────────────────────────────── */
+.lift {
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lift:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 0 var(--color-ink);
+}
+
+/* ── image zoom on hover ─────────────────────────────────────────────── */
+.img-zoom { overflow: hidden; }
+.img-zoom img {
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.img-zoom:hover img { transform: scale(1.06); }
+
+/* ── blinking storm dot ──────────────────────────────────────────────── */
+.pulse-dot { position: relative; }
+.pulse-dot::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0.35;
+  animation: pulse-soft 2.2s ease-in-out infinite;
+}
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(0.7); opacity: 0.45; }
+  50% { transform: scale(1.6); opacity: 0.08; }
+}
+
+/* ── reduced motion: everything settles instantly ────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .marquee-track { animation: none; }
+  .kenburns { animation: none; }
+  .line-mask > span { animation: none; transform: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .pulse-dot::before { animation: none; opacity: 0; }
+  .lift, .btn-press, .img-zoom img { transition: none; }
+}
